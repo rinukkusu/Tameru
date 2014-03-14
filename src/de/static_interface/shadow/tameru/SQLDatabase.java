@@ -1,6 +1,7 @@
 package de.static_interface.shadow.tameru;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -43,6 +44,25 @@ public abstract class SQLDatabase implements IDatabase
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * Checks whether the table exists
+	 * @param tablename Name of the table to check for
+	 * @return True if table exists, false of not
+	 */
+	public boolean existsTable(String tablename)
+	{
+		ResultSet set = null;
+		try
+		{
+			set = databaseConnection.getMetaData().getTables(null, null, tablename, null);
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return ( set != null );
 	}
 	
 	@Override
