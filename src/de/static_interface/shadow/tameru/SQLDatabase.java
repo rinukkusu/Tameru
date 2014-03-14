@@ -88,6 +88,26 @@ public abstract class SQLDatabase implements IDatabase
 		}
 	}
 	
+	public String getKey(String tablename, String value)
+	{
+		try
+		{
+			ResultSet set = databaseConnection.createStatement().executeQuery(String.format("SELECT * FROM %s WHERE VALUE=\'%s\'", tablename, value));
+			while ( set.next() )
+			{
+				if ( !set.getString("VALUE").equals(value) ) continue;
+				
+				return set.getString("VALUE");
+			}
+			throw new SQLException("Value not available in database");
+		}
+		catch ( SQLException e )
+		{
+			e.printStackTrace();
+			return "Error";
+		}
+	}
+	
 	@Override
 	public void deleteFromDatabase(String tablename, String key)
 	{
