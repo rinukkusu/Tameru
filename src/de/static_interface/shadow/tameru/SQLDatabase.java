@@ -1,10 +1,11 @@
 package de.static_interface.shadow.tameru;
 
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
+import java.util.List;
 
 public abstract class SQLDatabase implements IDatabase
 {
@@ -99,5 +100,31 @@ public abstract class SQLDatabase implements IDatabase
 		{
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void createArray(String tablename, String arrayname, String[] values)
+	{
+		String value = "";
+		for ( String s : values )
+		{
+			value = value+"×"+s;
+		}
+		
+		insertToDatabase(tablename, arrayname, value);
+	}
+	
+	@Override
+	public void addValueToArray(String tablename, String arrayname, String newValue)
+	{
+		List<String> values = Arrays.asList(getArray(tablename, arrayname));
+		values.add(newValue);
+		createArray(tablename, arrayname, (String[]) values.toArray());
+	}
+
+	@Override
+	public String[] getArray(String tablename, String arrayname)
+	{
+		return readFromDatabase(tablename, arrayname).split("×");
 	}
 }

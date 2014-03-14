@@ -3,7 +3,7 @@ package de.static_interface.shadow.tameru;
 public interface IDatabase
 {
 	/**
-	 * Inserts value with given key into database. (MAIN table if SQL database)
+	 * Inserts value with given key into database.
 	 * @param key
 	 * @param value
 	 */
@@ -21,4 +21,9 @@ public interface IDatabase
 	
 	public void deleteFromDatabase(String tablename, String key);
 	
+	public void createArray(String tablename, String arrayname, String[] values);
+	
+	public void addValueToArray(String tablename, String arrayname, String newValue);
+	
+	public String[] getArray(String tablename, String arrayname);
 }

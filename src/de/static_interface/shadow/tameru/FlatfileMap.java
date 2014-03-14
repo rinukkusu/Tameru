@@ -1,6 +1,7 @@
 package de.static_interface.shadow.tameru;
 
 import java.nio.file.Path;
+import java.util.Arrays;
 
 public class FlatfileMap implements IDatabase
 {
@@ -31,5 +32,31 @@ public class FlatfileMap implements IDatabase
 	public void deleteFromDatabase(String tablename, String key)
 	{
 		databaseFile.deleteString(key);
+	}
+	
+	@Override
+	public void createArray(String tablename, String arrayname, String[] values)
+	{
+		String value = "";
+		for ( String s : values )
+		{
+			value = value+s+"×";
+		}
+		
+		insertToDatabase(tablename, "¡"+arrayname, value);
+	}
+	
+	@Override
+	public String[] getArray(String tablename, String arrayname)
+	{
+		return readFromDatabase("", "¡"+arrayname).split("×");
+	}
+
+	@Override
+	public void addValueToArray(String tablename, String arrayname,	String newValue)
+	{
+		java.util.List<String> list = Arrays.asList(getArray(null, arrayname));
+		list.add(newValue);
+		createArray(null, arrayname, (String[]) list.toArray()); 
 	}
 }
