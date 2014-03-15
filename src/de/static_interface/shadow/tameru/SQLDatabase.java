@@ -35,6 +35,30 @@ public abstract class SQLDatabase
 		}
 	}
 	
+	/**
+	 * Returns a boolean. 
+	 * @param tablename The name of the table to search in.
+	 * @param keyname The name of the key. (Example: Table 'a' has VALUE text; VALUE would be this)
+	 * @param key The value of the key. (Example: Table 'a' has VALUE text; This would be the value which VALUE has.)
+	 * @return True if table name contains key else false.
+	 */
+	public boolean tableContains(String tablename, String keyname, String key)
+	{
+		ResultSet set = readFromDatabaseString(tablename, keyname, key);
+		try
+		{
+			while ( set.next() )
+			{
+				if ( set.getString(key).equals(key) ) return true;
+			}
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
 	public boolean containsTable(String tablename)
 	{
 		ResultSet set = null;
