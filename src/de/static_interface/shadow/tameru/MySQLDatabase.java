@@ -5,18 +5,18 @@ import java.sql.SQLException;
 
 public class MySQLDatabase extends SQLDatabase
 {
-	public MySQLDatabase(String hostname, String port, String databaseName, String user, String password)
+	public MySQLDatabase(String hostname, String port, String databasename, String username, String password)
 	{
 		try
 		{
 			Class.forName("org.sqlite.JDBC");
-			databaseConnection = DriverManager.getConnection(String.format("jdbc:mysql://%s:%s/%s", hostname, port, databaseName), user, password);
+			databaseConnection = DriverManager.getConnection(String.format("jdbc:mysql://%s:%s/%s", hostname, port, databasename), username, password);
 		}
-		catch (SQLException e)
+		catch (ClassNotFoundException e)
 		{
 			e.printStackTrace();
 		}
-		catch (ClassNotFoundException e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
 		}

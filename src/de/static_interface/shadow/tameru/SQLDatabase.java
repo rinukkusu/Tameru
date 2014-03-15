@@ -4,21 +4,17 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Arrays;
-import java.util.List;
 
-public abstract class SQLDatabase implements IDatabase
+public abstract class SQLDatabase
 {
 	Connection databaseConnection;
 	
-	@Override
-	public void insertToDatabase(String tablename, String key, String value)
+	public void insertIntoDatabase(String tablename, String key, String values)
 	{
 		try
 		{
 			Statement statement = databaseConnection.createStatement();
-			statement.execute(String.format("INSERT INTO %s VALUES(\'%s\',\'%s\')", tablename, key, value));
-			statement.close();
+			statement.execute(String.format("INSERT INTO %s VALUES(%s)", tablename, key, values));
 		}
 		catch (SQLException e)
 		{
@@ -26,14 +22,6 @@ public abstract class SQLDatabase implements IDatabase
 		}
 	}
 	
-	/**
-	 * Creates a table with a specific name & it's columns
-	 * @param tablename Name of the table.
-	 * @param valueTypes 
-	 * Types of columns with the syntax NAME type<br>
-	 * Example:<br>
-	 * KEY text
-	 */
 	public void createTable(String tablename, String valueTypes)
 	{
 		try
@@ -47,12 +35,7 @@ public abstract class SQLDatabase implements IDatabase
 		}
 	}
 	
-	/**
-	 * Checks whether the table exists
-	 * @param tablename Name of the table to check for
-	 * @return True if table exists, false of not
-	 */
-	public boolean existsTable(String tablename)
+	public boolean containsTable(String tablename)
 	{
 		ResultSet set = null;
 		try
@@ -63,88 +46,48 @@ public abstract class SQLDatabase implements IDatabase
 		{
 			e.printStackTrace();
 		}
-		return ( set != null );
+		return (set == null);
 	}
 	
-	@Override
-	public String readFromDatabase(String tablename, String key)
-	{
-		try
-		{
-			ResultSet set = databaseConnection.createStatement().executeQuery("SELECT * FROM "+tablename);
-			
-			while (set.next())
-			{
-				if ( !set.getString("KEY").equals(key) ) continue;
-				
-				return set.getString("VALUE");
-			}
-			throw new SQLException("Key not available in database.");
-		}
-		catch (SQLException e)
-		{
-			e.printStackTrace();
-			return "Error";
-		}
-	}
-	
-	public String getKey(String tablename, String value)
-	{
-		try
-		{
-			ResultSet set = databaseConnection.createStatement().executeQuery(String.format("SELECT * FROM %s WHERE VALUE=\'%s\'", tablename, value));
-			while ( set.next() )
-			{
-				if ( !set.getString("VALUE").equals(value) ) continue;
-				
-				return set.getString("VALUE");
-			}
-			throw new SQLException("Value not available in database");
-		}
-		catch ( SQLException e )
-		{
-			e.printStackTrace();
-			return "Error";
-		}
-	}
-	
-	@Override
-	public void deleteFromDatabase(String tablename, String key)
+	/**
+	 * Returns a result set. 
+	 * @param tablename The name of the table to search in.
+	 * @param keyname The name of the key. (Example: Table 'a' has VALUE text; VALUE would be this)
+	 * @param key The value of the key. (Example: Table 'a' has VALUE text; This would be the value which VALUE has.)
+	 * @return Returns the ResultSet of that operation.
+	 */
+	public ResultSet readFromDatabaseString(String tablename, String keyname, String key)
 	{
 		try
 		{
 			Statement statement = databaseConnection.createStatement();
-			statement.execute(String.format("DELETE FROM %s WHERE KEY=\'%s\'", tablename, key));
+			ResultSet set = statement.executeQuery(String.format("SELECT * FROM %s WHERE %s=\'%s\'", tablename, keyname, key));
+			return set;
 		}
 		catch (SQLException e)
 		{
 			e.printStackTrace();
+			return null;
 		}
-	}
-
-	@Override
-	public void createArray(String tablename, String arrayname, String[] values)
-	{
-		String value = "";
-		for ( String s : values )
-		{
-			value = value+"×"+s;
-		}
-		
-		insertToDatabase(tablename, arrayname, value);
 	}
 	
-	@Override
-	public void addValueToArray(String tablename, String arrayname, String newValue)
+	/**
+	 * Deletes an entry from a table.
+	 * @param tablename Name of the table to remove the entry from.
+	 * @param keyname Name of the key. (Eg. Table 'a' has VALUE text; VALUE would be this)
+	 * @param key Value of the key. (Eg. Table 'a' has VALUE text; this would be the value of VALUE)
+	 */
+	public boolean deleteFromDatabase(String tablename, String keyname, String key)
 	{
-		List<String> values = Arrays.asList(getArray(tablename, arrayname));
-		values.add(newValue);
-		createArray(tablename, arrayname, (String[]) values.toArray());
-	}
-
-	@Override
-	public String[] getArray(String tablename, String arrayname)
-	{
-		return readFromDatabase(tablename, arrayname).split("×");
+		try
+		{
+			Statement statement = databaseConnection.createStatement();
+			return statement.execute(String.format("DELETE FROM %s WHERE %s=\'%s\'", tablename, keyname, key));
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			return false;
+		}
 	}
 }

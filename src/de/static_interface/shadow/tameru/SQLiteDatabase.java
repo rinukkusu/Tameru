@@ -6,12 +6,30 @@ import java.sql.SQLException;
 
 public class SQLiteDatabase extends SQLDatabase
 {
-	public SQLiteDatabase(Path path)
+	public SQLiteDatabase(String path)
 	{
 		try
 		{
 			Class.forName("org.sqlite.JDBC");
-			databaseConnection = DriverManager.getConnection(String.format("jdbc:sqlite:%s", path.toAbsolutePath().toString()));
+			databaseConnection = DriverManager.getConnection("jdbc:sqlite:"+path);
+		}
+		catch (ClassNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	public SQLiteDatabase(Path path)
+	{
+
+		try
+		{
+			Class.forName("org.sqlite.JDBC");
+			databaseConnection = DriverManager.getConnection("jdbc:sqlite:"+path.toAbsolutePath().toString());
 		}
 		catch (ClassNotFoundException e)
 		{
