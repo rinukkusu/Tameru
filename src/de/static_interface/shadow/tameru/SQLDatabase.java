@@ -59,6 +59,26 @@ public abstract class SQLDatabase
 		return false;
 	}
 	
+	/**
+	 * @param tablename Table name
+	 * @param keyname Key data type name
+	 * @param key Key value
+	 * @param setStatement <html>SQL-Statement SET.<br>
+	 * Example: SET ContactName='Alferd Schmidt', City='Hamburg'
+	 */
+	public void update(String tablename, String keyname, String key, String setStatement)
+	{
+		try
+		{
+			Statement statement = databaseConnection.createStatement();
+			statement.execute(String.format("UPDATE %s %s WHERE %s=\'%s\'", tablename, setStatement, keyname, key));
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
 	public boolean containsTable(String tablename)
 	{
 		ResultSet set = null;
