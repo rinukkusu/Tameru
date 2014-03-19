@@ -9,12 +9,12 @@ public abstract class SQLDatabase
 {
 	Connection databaseConnection;
 	
-	public void insertIntoDatabase(String tablename, String key, String values)
+	public void insertIntoDatabase(String tablename, String values)
 	{
 		try
 		{
 			Statement statement = databaseConnection.createStatement();
-			statement.execute(String.format("INSERT INTO %s VALUES(%s)", tablename, key, values));
+			statement.execute(String.format("INSERT INTO %s VALUES(%s)", tablename, values));
 		}
 		catch (SQLException e)
 		{
