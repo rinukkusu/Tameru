@@ -22,6 +22,19 @@ public abstract class SQLDatabase
 		}
 	}
 	
+	public void insertIntoDatabase(String tablename, String columns, String values)
+	{
+		try
+		{
+			Statement statement = databaseConnection.createStatement();
+			statement.execute(String.format("INSERT INTO %s (%s) VALUES (%s)", tablename, columns, values));
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
 	public void createTable(String tablename, String valueTypes)
 	{
 		try
